@@ -13,9 +13,8 @@ export default function Navigation({ scrolled }: NavigationProps) {
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'bg-dark-green/95 backdrop-blur-md' : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-dark-green/95 backdrop-blur-md' : 'bg-transparent'
+          }`}
       >
         <div className="max-w-[1920px] mx-auto px-6 lg:px-12 py-6 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 text-2xl font-display tracking-wider text-lime hover:opacity-80 transition-opacity cursor-pointer">
@@ -29,7 +28,7 @@ export default function Navigation({ scrolled }: NavigationProps) {
             <a href="/" className="text-sm font-medium text-white hover:text-lime transition-colors cursor-pointer whitespace-nowrap">
               Home
             </a>
-            <a href="#community" className="text-sm font-medium text-white hover:text-lime transition-colors cursor-pointer whitespace-nowrap">
+            <a href="#impact" className="text-sm font-medium text-white hover:text-lime transition-colors cursor-pointer whitespace-nowrap">
               Community
             </a>
             <a href="#priorities" className="text-sm font-medium text-white hover:text-lime transition-colors cursor-pointer whitespace-nowrap">
@@ -37,6 +36,9 @@ export default function Navigation({ scrolled }: NavigationProps) {
             </a>
             <a href="#campaign-events" className="text-sm font-medium text-white hover:text-lime transition-colors cursor-pointer whitespace-nowrap">
               Volunteer
+            </a>
+            <a href="/admin/login" className="flex items-center gap-1 text-sm font-medium text-white/70 hover:text-white transition-colors cursor-pointer whitespace-nowrap">
+              <i className="ri-login-box-line"></i> Staff Login
             </a>
             <a
               href="#donate"
@@ -74,7 +76,7 @@ export default function Navigation({ scrolled }: NavigationProps) {
                 Home
               </a>
               <a
-                href="#community"
+                href="#impact"
                 onClick={() => setMenuOpen(false)}
                 className="text-3xl font-display text-white hover:text-lime transition-colors cursor-pointer"
               >
@@ -95,9 +97,15 @@ export default function Navigation({ scrolled }: NavigationProps) {
                 Volunteer
               </a>
               <a
+                href="/admin/login"
+                className="text-3xl font-display text-white/70 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
+              >
+                <i className="ri-login-box-line"></i> Staff Login
+              </a>
+              <a
                 href="#donate"
                 onClick={() => setMenuOpen(false)}
-                className="px-8 py-3 bg-lime text-dark-green text-lg font-bold rounded-full hover:bg-lime/90 transition-all cursor-pointer whitespace-nowrap"
+                className="px-8 py-3 bg-lime text-dark-green text-lg font-bold rounded-full hover:bg-lime/90 transition-all cursor-pointer whitespace-nowrap mt-4"
               >
                 Donate to D28
               </a>

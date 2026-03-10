@@ -12,6 +12,8 @@ const DONATION_TIERS = [25, 50, 100, 250, 500, 1000];
 export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
     const [amount, setAmount] = useState<number | 'custom' | ''>('');
     const [customAmount, setCustomAmount] = useState('');
+    const [employer, setEmployer] = useState('');
+    const [occupation, setOccupation] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -24,6 +26,11 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
             return;
         }
 
+        if (!employer.trim() || !occupation.trim()) {
+            setError('Georgia state law requires employer and occupation information.');
+            return;
+        }
+
         try {
             setIsSubmitting(true);
             setError(null);
@@ -31,7 +38,11 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
             const response = await fetch(`${API_BASE_URL}/api/donate`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: finalAmount })
+                body: JSON.stringify({
+                    amount: finalAmount,
+                    employer: employer.trim(),
+                    occupation: occupation.trim()
+                })
             });
 
             const data = await response.json();
@@ -128,6 +139,43 @@ export default function DonateModal({ isOpen, onClose }: DonateModalProps) {
                                             }}
                                             className={`w-full pl-8 pr-4 py-3 rounded-xl border-2 font-bold transition-colors focus:outline-none ${amount === 'custom' ? 'border-lime focus:border-lime' : 'border-gray-200 focus:border-lime/50'
                                                 }`}
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* GA Legal Compliance Fields */}
+                                <div className="space-y-4 pt-2 border-t border-gray-100">
+                                    <p className="text-xs text-gray-500 font-medium">
+                                        * Georgia State Law requires us to collect the employer and occupation for all contributors.
+                                    </p>
+
+                                    <div>
+                                        <label htmlFor="employer" className="block text-sm font-bold text-gray-700 mb-1">
+                                            Employer <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            id="employer"
+                                            type="text"
+                                            value={employer}
+                                            onChange={(e) => setEmployer(e.target.value)}
+                                            placeholder="e.g. Self-employed, Retired, ACME Corp"
+                                            required
+                                            className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-lime focus:outline-none transition-colors"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="occupation" className="block text-sm font-bold text-gray-700 mb-1">
+                                            Occupation <span className="text-red-500">*</span>
+                                        </label>
+                                        <input
+                                            id="occupation"
+                                            type="text"
+                                            value={occupation}
+                                            onChange={(e) => setOccupation(e.target.value)}
+                                            placeholder="e.g. Consultant, Teacher, CEO"
+                                            required
+                                            className="w-full px-4 py-2.5 rounded-xl border-2 border-gray-200 focus:border-lime focus:outline-none transition-colors"
                                         />
                                     </div>
                                 </div>

@@ -8,6 +8,9 @@ const NotFound = lazy(() => import('../pages/NotFound'));
 const Login = lazy(() => import('../pages/admin/Login'));
 const DashboardLayout = lazy(() => import('../pages/admin/DashboardLayout'));
 const Dashboard = lazy(() => import('../pages/admin/Dashboard'));
+const Volunteers = lazy(() => import('../pages/admin/Volunteers'));
+const Orders = lazy(() => import('../pages/admin/Orders'));
+const Donations = lazy(() => import('../pages/admin/Donations'));
 const ProtectedRoute = lazy(() => import('../components/ProtectedRoute'));
 
 const routes: RouteObject[] = [
@@ -30,6 +33,18 @@ const routes: RouteObject[] = [
       {
         path: 'dashboard',
         element: <Dashboard />,
+      },
+      {
+        path: 'volunteers',
+        element: <Volunteers />,
+      },
+      {
+        path: 'orders',
+        element: <Orders />,
+      },
+      {
+        path: 'donations',
+        element: <Donations />,
       },
       {
         path: '',

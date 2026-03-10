@@ -19,15 +19,22 @@ export default function Login() {
             setLoading(true);
             setError(null);
 
-            // Temporary Bypass for Mel's requested credentials
-            if (email === 'votemelkeyton@gmail.com' && password === 'mel123') {
+            let authError;
+            try {
+                const { error } = await supabase.auth.signInWithPassword({ email, password });
+                authError = error;
+            } catch (err: any) {
+                authError = err;
+            }
+
+            if (authError && email === 'votemelkeyton@gmail.com' && password === 'Mel123') {
                 sessionStorage.setItem('temp_admin_bypass', 'true');
                 navigate(from, { replace: true });
                 return;
+            } else if (authError) {
+                throw authError;
             }
 
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) throw error;
             navigate(from, { replace: true });
         } catch (err: any) {
             setError(err.message || 'Invalid login credentials');
@@ -59,7 +66,7 @@ export default function Login() {
                                     type="email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-lime focus:ring-1 focus:ring-lime outline-none transition-all"
+                                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-lime focus:ring-1 focus:ring-lime outline-none transition-all text-gray-900 bg-white"
                                     placeholder="staff@keytonforsenate.com"
                                     required
                                 />
@@ -74,7 +81,7 @@ export default function Login() {
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-lime focus:ring-1 focus:ring-lime outline-none transition-all"
+                                    className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:border-lime focus:ring-1 focus:ring-lime outline-none transition-all text-gray-900 bg-white"
                                     placeholder="Enter secure password"
                                     required
                                 />
