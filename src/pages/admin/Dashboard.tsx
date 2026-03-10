@@ -10,10 +10,31 @@ export default function Dashboard() {
     const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
     const [orders, setOrders] = useState<SwagOrder[]>([]);
     const [donations, setDonations] = useState<Donation[]>([]);
+    const [totalDue, setTotalDue] = useState<number>(0);
+    const [invoiceCount, setInvoiceCount] = useState<number>(0);
     const [loading, setLoading] = useState(true);
 
     const fetchDashboardData = async () => {
         try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const userSessionToken = session?.access_token || '';
+
+            let invTotal = 0;
+            let invCount = 0;
+            try {
+                const res = await fetch(
+                    "https://cvflfjrftnteuzfpeiut.supabase.co/functions/v1/invoices-api",
+                    { headers: { Authorization: `Bearer ${userSessionToken}` } }
+                );
+                if (res.ok) {
+                    const { invoices, total_due, count } = await res.json();
+                    invTotal = total_due || 0;
+                    invCount = count || 0;
+                }
+            } catch (err) {
+                console.error("Failed to fetch invoices", err);
+            }
+
             const [vols, ords, dons] = await Promise.all([
                 supabase.from('volunteers').select('*').order('created_at', { ascending: false }).limit(5),
                 supabase.from('swag_orders').select('*').order('created_at', { ascending: false }).limit(5),
@@ -23,6 +44,8 @@ export default function Dashboard() {
             setVolunteers(vols.data || []);
             setOrders(ords.data || []);
             setDonations(dons.data || []);
+            setTotalDue(invTotal);
+            setInvoiceCount(invCount);
         } catch (err) {
             console.error('Error fetching dashboard data:', err);
         } finally {
@@ -87,6 +110,16 @@ export default function Dashboard() {
                     <div>
                         <p className="text-sm text-white/70 font-medium tracking-wide uppercase">Recent Donations</p>
                         <p className="text-3xl font-display text-lime">{donations.length}</p>
+                    </div>
+                </motion.div>
+
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-red-50 p-6 rounded-2xl shadow-sm border border-red-100 flex items-center gap-4 col-span-1 md:col-span-3">
+                    <div className="w-12 h-12 bg-red-100 text-red-600 rounded-xl flex items-center justify-center text-xl">
+                        <i className="ri-file-list-3-fill" />
+                    </div>
+                    <div>
+                        <p className="text-sm text-red-800/70 font-bold tracking-wide uppercase">Total Outstanding Invoices</p>
+                        <p className="text-3xl font-display text-red-600">${(totalDue / 100).toFixed(2)} <span className="text-sm font-medium text-red-800/50">({invoiceCount} pending)</span></p>
                     </div>
                 </motion.div>
             </div>
